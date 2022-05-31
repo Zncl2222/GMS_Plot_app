@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, redirect, url_for, render_template, send_file
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
-from model.markovchain_plot import GMS_Plot
+from model.markovchain_plot import markov_chain, semivariance
 
 UPLOAD_FOLDER = './static/data'
 ALLOWED_DATATYPE = set(['txt'])
@@ -39,29 +39,29 @@ def upload_file():
     return render_template("home.html")
 
 @app.route('/plot', methods=['GET','POST'])
-def Plot():
+def markov_plot():
     a = os.listdir('./static/data/')
-    gms_plot = GMS_Plot()
+    gms_plot = markov_chain()
     param_dict = request.form.to_dict()
     x_ratio = int(param_dict['x_ratio'])
     
     if len(a) == 4:
     
-        x = gms_plot.ReadData2()
+        gms_plot.ReadData()
 
-        gms_plot.Subplot2(x, x_ratio)
+        gms_plot.Subplot2(x_ratio)
 
     elif len(a) == 9:
 
-        x = gms_plot.ReadData2()
+        gms_plot.ReadData()
 
-        gms_plot.Subplot3(x, x_ratio)
+        gms_plot.Subplot3(x_ratio)
         
     elif len(a) == 16:
-        print("len16")
-        x = gms_plot.ReadData2()
+        
+        gms_plot.ReadData()
 
-        gms_plot.Subplot4(x, x_ratio)
+        gms_plot.Subplot4(x_ratio)
 
     return render_template("home.html", img = a)
 
