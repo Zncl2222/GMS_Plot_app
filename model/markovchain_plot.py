@@ -127,6 +127,11 @@ class semivariance(markov_chain):
         x1=range(SL)
         x2=range(SL2,len(self.Z[0][:]))
         
+        angle = []
+        for i in range(1, 13):
+            n = i * 15
+            angle.append(str(n))
+    
         for i in range(len(self.Z)):
             plt.plot(self.Z[i][x1,0]*ratio, self.Z[i][x1,1],linewidth=2,color='k',label="Model")
             plt.plot(self.Z[i][x2,0]*ratio, self.Z[i][x2,1],linewidth=2,color='r',linestyle='--',label="Theory")
@@ -134,6 +139,7 @@ class semivariance(markov_chain):
             plt.legend(fontsize=18)
             plt.ylabel("Semi-variance",fontsize=24)
             plt.xlabel("Lag distance ["+self.x_unit+"]",fontsize=24)
+            plt.title("Angle = "+angle[i]+"$\degree$", fontsize = 18)
             plt.ticklabel_format(style=self.x_notation,axis='x',scilimits=(0,0),useMathText=True,useOffset=False)
             plt.rc('font', size=17)
             plt.grid(alpha=0.25)
