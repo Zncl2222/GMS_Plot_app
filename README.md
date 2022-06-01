@@ -12,19 +12,19 @@ The following steps will let you create a small server on your machine. Which me
 
    https://www.anaconda.com/products/distribution
 
-2. Open PythonEnvironmentCreate.bat to create the virtual env and install the necessary package.
+2. Open **PythonEnvironmentCreate.bat** to create the virtual env and install the necessary package.
 
-3. (Optional) If you fail to install the packages, you can open PythonEnvironmentInstall.bat to reinstall.
+3. (Optional) If you fail to install the packages, you can open **PythonEnvironmentInstall.bat** to reinstall.
 
-4. Download the ngrok.exe from
+4. Download the **ngrok.exe** from
 
    https://ngrok.com/
 
 5. Sign up and login. Follow the steps to get the authentication of ngrok.
 
-6. Put ngrok.exe to this folder
+6. Put **ngrok.exe** to this folder
 
-7. Open Sever_connect(ngrok).bat and Sever_activate.bat, and you will see the app's URL from the cmd window.
+7. Open **Sever_connect(ngrok)**.bat and **Sever_activate.bat**, and you will see the app's URL from the cmd window.
 
 8. Open the URL and start to upload the file and plot.
 
