@@ -2,6 +2,14 @@
 
 This is a GMS plot app for Geohydraulic Lab.
 
+### Semivariance plot
+<hr>
+<img src="figure/semivariance_ex.jpg">
+
+### Markov chain plot
+<hr>
+<img src="figure/markov.jpg">
+
 ## How to use
 
 This is a web app made by flask python. The environment are base on the Windows-64 bit and Anaconda 3.
