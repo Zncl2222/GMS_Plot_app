@@ -39,9 +39,25 @@
             <input type="submit" value="Upload"> 
         </form>
         <br>
-        <form action="plot" method="post">
+        <form action="semiplot" method="post">
             <label for="Name">X ratio:</label>
             <input type="number" name="x_ratio" id ="x_ratio" value="1">
+            <br>
+            <div>
+                <label for="Name">X unit:</label>
+                <select name="x_unit" id ="x_unit">
+                    <option>cm</option>
+                    <option>m</option>
+                    <option>km</option>
+                </select>
+                <br>
+                <label for="Name">X axis notation:</label>
+                <select name="x_notation" id ="x_notation">
+                    <option>sci</option>
+                    <option>plain</option>
+                </select>
+            </div>
+
             <br>
             <div align="left" style="position:relative;top:10px;left:65px">
                 <input type="submit" value="Plot">
@@ -49,16 +65,36 @@
         </form>
     </div>
 
-    <br><br>
-
- 
-
+    <br><br><br><br>
 
     {% if img %}
 
     <br>
     <hr>
     <img src = "/static/images/GMSPlot.png", height="350",width="200">
+    <form action="download" method="get">
+        <input type="submit" value="Download">
+    </form>
+
+    {% endif %}
+
+    {% if img2 %}
+
+    <img src = "/static/images/semivariance0.png" , height="350",width="200">
+    <img src = "/static/images/semivariance1.png" , height="350",width="200">
+    <img src = "/static/images/semivariance2.png" , height="350",width="200">
+    <img src = "/static/images/semivariance3.png" , height="350",width="200">
+    <img src = "/static/images/semivariance4.png" , height="350",width="200">
+    <img src = "/static/images/semivariance5.png" , height="350",width="200">
+    <img src = "/static/images/semivariance6.png" , height="350",width="200">
+    <img src = "/static/images/semivariance7.png" , height="350",width="200">
+    <img src = "/static/images/semivariance8.png" , height="350",width="200">
+    <img src = "/static/images/semivariance9.png" , height="350",width="200">
+    <img src = "/static/images/semivariance10.png" , height="350",width="200">
+    <img src = "/static/images/semivariance11.png" , height="350",width="200">
+
+    <br>
+    <hr>
     <form action="download" method="get">
         <input type="submit" value="Download">
     </form>
