@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from matplotlib.font_manager import FontProperties
 from pylab import *
+from zipfile import ZipFile
 matplotlib.use('Agg')
 
 class markov_chain:
@@ -146,5 +147,12 @@ class semivariance(markov_chain):
             plt.tight_layout()
             plt.savefig('./static/images/semivariance'+str(i)+'.png',dpi=500)
             plt.clf()
+
+        zip_file = ZipFile('./static/semivariance_plot.zip','w')
+        for i in range(len(self.Z)):
+            zip_file.write('./static/images/semivariance'+str(i)+'.png')
+        zip_file.close()
+
+
 
         
