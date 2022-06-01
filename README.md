@@ -12,7 +12,7 @@ This is a GMS plot app for Geohydraulic Lab.
 
 ## How to use
 
-This is a web app made by flask python. The environment are base on the Windows-64 bit and Anaconda 3.
+This is a web app made by flask python. The environment are based on the Windows-64 bit and Anaconda 3.
 
 The following steps will let you create a small server on your machine. Which means everyone who knows the URL can get access to you machine.
 
