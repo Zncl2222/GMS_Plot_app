@@ -9,7 +9,7 @@ ALLOWED_DATATYPE = set(['txt'])
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_SIZE'] = 1024 * 1024
-
+download_name = 'Markov'
 
 def allowed_file(filename):
     return '.' in filename and filename.split('.', 1)[1] in ALLOWED_DATATYPE
@@ -63,6 +63,8 @@ def markov_plot():
 
         gms_plot.Subplot4(x_ratio)
 
+    download = 'Markov'
+
     return render_template("home.html", img = True)
 
 @app.route('/semiplot', methods=['GET','POST'])
@@ -80,18 +82,22 @@ def semivariance_plot():
 
     gms_plot.semi_plot(x_ratio)
 
+    download = 'Semi'
+
     return render_template("home.html", img2 = True)
 
-
-@app.route('/download')
-def download():
+@app.route('/download_markov')
+def download_markov():
     path = './static/images/GMSPlot.png'
+    return send_file(path, as_attachment=True)
+@app.route('/download_semi')
+def download_semi():
+    path = './static/semivariance_plot.zip'
     return send_file(path, as_attachment=True)
 
 @app.route('/upload/<filename>')
 def uploaded_file(filename):
     return send_from_directory('./static/data',filename)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
