@@ -1,10 +1,11 @@
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
 from matplotlib.font_manager import FontProperties
 from pylab import *
-
+matplotlib.use('Agg')
 
 class markov_chain:
     
@@ -23,7 +24,7 @@ class markov_chain:
         return self.Z
 
     def Subplot4(self, ratio):
-
+        plt.clf()
         for i in range(len(self.Z[0][:,0])):
             if abs(self.Z[0][i,0]-self.Z[0][i-1,0])>=20:
                 SL=i
@@ -50,7 +51,7 @@ class markov_chain:
         plt.savefig('./static/images/GMSPlot.png',dpi=800)
 
     def Subplot3(self, ratio):
-
+        plt.clf()
         for i in range(len(self.Z[0][:,0])):
             if abs(self.Z[0][i,0]-self.Z[0][i-1,0])>=20:
                 SL=i
@@ -78,7 +79,7 @@ class markov_chain:
         plt.savefig('./static/images/GMSPlot.png',dpi=800)
 
     def Subplot2(self, ratio):
-
+        plt.clf()
         for i in range(len(self.Z[0][:,0])):
             if abs(self.Z[0][i,0]-self.Z[0][i-1,0])>=20:
                 SL=i
@@ -111,8 +112,12 @@ class markov_chain:
 
 class semivariance(markov_chain):
 
-    def semi_plot(self,ratio):
+    def __init__(self, x_unit, x_notation):
+        self.x_unit = x_unit
+        self.x_notation = x_notation
 
+    def semi_plot(self,ratio):
+        
         for i in range(len(self.Z[0][:,0])):
             if np.isnan(self.Z[0][i,0])==True and np.isnan(self.Z[0][i-1,0])==False:
                 SL=i
@@ -121,19 +126,19 @@ class semivariance(markov_chain):
                 break
         x1=range(SL)
         x2=range(SL2,len(self.Z[0][:]))
-
+        
         for i in range(len(self.Z)):
-            plt.figure(num=123+i,figsize=(9,7))
             plt.plot(self.Z[i][x1,0]*ratio, self.Z[i][x1,1],linewidth=2,color='k',label="Model")
             plt.plot(self.Z[i][x2,0]*ratio, self.Z[i][x2,1],linewidth=2,color='r',linestyle='--',label="Theory")
             plt.xticks(fontsize=18);plt.yticks(fontsize=18)
-            plt.legend()
+            plt.legend(fontsize=18)
             plt.ylabel("Semi-variance",fontsize=24)
-            plt.xlabel("Lag distance",fontsize=24)
-            plt.ticklabel_format(style='sci',axis='x',scilimits=(0,0),useMathText=True,useOffset=False)
+            plt.xlabel("Lag distance ["+self.x_unit+"]",fontsize=24)
+            plt.ticklabel_format(style=self.x_notation,axis='x',scilimits=(0,0),useMathText=True,useOffset=False)
             plt.rc('font', size=17)
             plt.grid(alpha=0.25)
             plt.tight_layout()
-            plt.savefig('./static/images/semivariance.png',dpi=500)
+            plt.savefig('./static/images/semivariance'+str(i)+'.png',dpi=500)
+            plt.clf()
 
         
