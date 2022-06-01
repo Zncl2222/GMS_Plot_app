@@ -63,7 +63,25 @@ def markov_plot():
 
         gms_plot.Subplot4(x_ratio)
 
-    return render_template("home.html", img = a)
+    return render_template("home.html", img = True)
+
+@app.route('/semiplot', methods=['GET','POST'])
+def semivariance_plot():
+
+    a = os.listdir('./static/data')
+    param_dict = request.form.to_dict()
+    x_ratio = int(param_dict['x_ratio'])
+    x_unit = param_dict['x_unit']
+    x_notation = param_dict['x_notation']
+
+    gms_plot = semivariance(x_unit, x_notation)
+
+    gms_plot.ReadData()
+
+    gms_plot.semi_plot(x_ratio)
+
+    return render_template("home.html", img2 = True)
+
 
 @app.route('/download')
 def download():
