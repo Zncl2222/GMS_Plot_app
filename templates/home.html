@@ -17,7 +17,7 @@
     <div>
         <h2> Markov Chain Plot</h2>
         <form action="upload" method="post" enctype="multipart/form-data">
-            <input type="file" multiple="" name="files" class="span3"><br><br>
+            <input type="file" multiple="" name="files" accept=".txt"><br><br>
             <input type="submit" value="Upload">
         </form>
         <br>
@@ -35,7 +35,7 @@
     <div  style = "position:absolute; left:500px; ">
         <h2> Semivariance Plot</h2>
         <form action="upload" method="post" enctype="multipart/form-data">
-            <input type="file" multiple="" name="files" class="span3"><br><br>
+            <input type="file" multiple="" name="files" accept=".txt"><br><br>
             <input type="submit" value="Upload"> 
         </form>
         <br>
@@ -72,8 +72,8 @@
     <br>
     <hr>
     <img src = "/static/images/GMSPlot.png", height="350",width="200">
-    <form action="download" method="get">
-        <input type="submit" value="Download">
+    <form action="download_markov" method="get" id="Markov">
+        <input type="submit"  value="Download">
     </form>
 
     {% endif %}
@@ -95,8 +95,8 @@
 
     <br>
     <hr>
-    <form action="download" method="get">
-        <input type="submit" value="Download">
+    <form action="download_semi" method="get" >
+        <input type="submit" name ="semi" value="Download">
     </form>
 
     {% endif %}
