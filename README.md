@@ -35,4 +35,3 @@ The following steps will let you create a small server on your machine. Which me
 7. Open **Sever_connect(ngrok)**.bat and **Sever_activate.bat**, and you will see the app's URL from the cmd window.
 
 8. Open the URL and start to upload the file and plot.
-

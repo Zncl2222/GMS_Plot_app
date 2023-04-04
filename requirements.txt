@@ -1,6 +1,6 @@
 flask
-numpy
+gunicorn
 matplotlib
+numpy
 pandas
 werkzeug
-gunicorn
