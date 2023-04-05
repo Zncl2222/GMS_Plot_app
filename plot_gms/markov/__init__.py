@@ -1,3 +1,3 @@
-from .markov_plot import MarkovPlot
+from .markov_plot import MarkovPlotUpload
 
-__all__ = ['MarkovPlot']
+__all__ = ['MarkovPlotUpload']

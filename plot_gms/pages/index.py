@@ -1,5 +1,5 @@
 import pynecone as pc
-from plot_gms.markov import MarkovPlot
+from plot_gms.markov import MarkovPlotUpload
 
 
 def index() -> pc.Component:
@@ -21,15 +21,16 @@ def index() -> pc.Component:
                 pc.button(
                     'Plot',
                     font_size='0.75em',
-                    width='100%',
+                    width='10em',
                     color='white',
                     background_color='rgb(36, 90, 162)',
                     border_radius='1em',
                     padding='1em',
-                    on_click=lambda: MarkovPlot.handle_upload(
+                    on_click=lambda: MarkovPlotUpload.handle_upload(
                         pc.upload_files(),
                     ),
                 ),
+                pc.plotly(data=MarkovPlotUpload.fig, layout=MarkovPlotUpload.fig_layout),
                 spacing='1.5em',
                 font_size='2em',
             ),
