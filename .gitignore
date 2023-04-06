@@ -1,3 +1,4 @@
 pynecone.db
 .web
 *__pycache__*
+.env*
