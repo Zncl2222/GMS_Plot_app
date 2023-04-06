@@ -7,96 +7,74 @@ from io import BytesIO
 from plot_gms.state import State
 
 
-class MarkovPlot(State):
-    img: str
+class MarkovPlotUpload(State):
+    fig = make_subplots(rows=1, cols=1)
+    fig_layout = {}
 
-    async def handle_upload(self, file: pc.UploadFile):
-        """Handle the upload of a file.
+    async def handle_upload(self, file: list[pc.UploadFile]):
+        upload_data = []
+        for data in file:
+            upload_data.append(await data.read())
 
-        Args:
-            file: The uploaded file.
-        """
-        upload_data = await file.read()
-        df = pd.read_table(BytesIO(upload_data), header=None, encoding='UTF16')
-        df[2] = df[2].apply(lambda x: np.NaN if str(x).isspace() else x)
-        df[3] = df[3].apply(lambda x: np.NaN if str(x).isspace() else x)
-        Z = np.zeros((1, np.shape(df)[0], 2))
-        Z[0, :] = df.iloc[:, 2:4]
-        for i in range(len(Z[0][:, 0])):
-            if abs(Z[0][i, 0] - Z[0][i - 1, 0]) >= 20:
-                SL = i
-            if np.isnan(Z[0][i, 0]) is True:
-                SL2 = i
-                break
+        df1 = []
+        df2 = []
+        for data in upload_data:
+            df = pd.read_table(BytesIO(data), header=None, encoding='UTF16')
+            df[2] = df[2].apply(lambda x: np.NaN if str(x).isspace() else x).astype(float)
+            df[3] = df[3].apply(lambda x: np.NaN if str(x).isspace() else x).astype(float)
+            df = df[(df[2].notna() & df[3].notna())]
+            df1.append(df[(df[0] == 'Measured Data')])
+            df2.append(df[(df[0]) == 'Markov Chain'])
 
-        x1 = range(SL)
-        x2 = range(SL, SL2)
-        count = 0
-
-        plot(Z, x1, x2, count)
+        self.fig = MarkovPlot.markov_plot(df1, df2)
+        self.fig_layout = self.fig._layout
 
 
-def plot(df, x1, x2, count):
-    fig = make_subplots(rows=1, cols=2)
-    scatter1 = go.Scatter(x=df[count][x1, 0], y=df[count][x1, 1])
-    scatter2 = go.Scatter(x=df[count][x2, 0], y=df[count][x2, 1])
-    fig.append_trace(scatter1, 1, 1)
-    fig.append_trace(scatter2, 1, 2)
+class MarkovPlot:
+    @classmethod
+    def markov_plot(self, df1, df2):
+        number = int((len(df1)) ** 0.5)
+        if number != 0:
+            fig = make_subplots(rows=number, cols=number)
+            for r in range(number):
+                for c in range(number):
+                    legend = True if (r == 0 and c == 0) else False
+                    scatter1 = go.Scatter(
+                        x=df1[r + c].iloc[:, 2],
+                        y=df1[r + c].iloc[:, 3],
+                        line=dict(color='black'),
+                        showlegend=legend,
+                        name='Model',
+                    )
+                    scatter2 = go.Scatter(
+                        x=df2[r + c].iloc[:, 2],
+                        y=df2[r + c].iloc[:, 3],
+                        line=dict(color='red', dash='dash'),
+                        showlegend=legend,
+                        name='Theory',
+                    )
+                    fig.append_trace(scatter1, r + 1, c + 1)
+                    fig.append_trace(scatter2, r + 1, c + 1)
+                    # Update xaxis properties
+                    fig.update_xaxes(
+                        range=[0, 75],
+                        showgrid=True,
+                        gridwidth=1,
+                        gridcolor='rgba(0, 0, 0, 0.2)',
+                    )
+                    fig.update_yaxes(
+                        range=[0, 1],
+                        showgrid=True,
+                        gridwidth=1,
+                        gridcolor='rgba(0, 0, 0, 0.2)',
+                    )
 
-    fig.update_layout(
-        height=500,
-        width=700,
-        title_text='Multiple Subplots with Titles',
-    )
-    fig.show()
+            fig.update_layout(
+                height=800,
+                width=1200,
+                title_text='Multiple Subplots with Titles',
+                plot_bgcolor='rgba(0, 0, 0, 0)',
+                legend=dict(y=0.5, traceorder='reversed'),
+            )
 
-
-# class markov_chain(pc.State):
-
-#     def ReadData(self):
-#         a=os.listdir('./static/data')
-#         a.sort(key = len)
-#         Z = pd.read_table('./static/data'+'\\'+a[0],header=None,encoding='UTF16')
-#         self.Z = np.zeros((len(a),np.shape(Z)[0],2))
-
-#         for i in range(len(a)):
-#             Y=pd.read_table('./static/data'+'\\'+a[i],header=None,encoding='UTF16')
-#             Y[2]=Y[2].apply(lambda x: np.NaN if str(x).isspace() else x)
-#             Y[3]=Y[3].apply(lambda x: np.NaN if str(x).isspace() else x)
-#             self.Z[i,:]=Y.iloc[:,2:4]
-
-#         return self.Z
-
-#     def plot(self):
-#         a=os.listdir('./static/data')
-#         a.sort(key = len)
-#         Z = pd.read_table('./static/data'+'\\'+a[0],header=None,encoding='UTF16')
-#         self.Z = np.zeros((len(a),np.shape(Z)[0],2))
-
-#         for i in range(len(a)):
-#             Y=pd.read_table('./static/data'+'\\'+a[i],header=None,encoding='UTF16')
-#             Y[2]=Y[2].apply(lambda x: np.NaN if str(x).isspace() else x)
-#             Y[3]=Y[3].apply(lambda x: np.NaN if str(x).isspace() else x)
-#             self.Z[i,:]=Y.iloc[:,2:4]
-#         for i in range(len(self.Z[0][:,0])):
-#             if abs(self.Z[0][i,0]-self.Z[0][i-1,0])>=20:
-#                 SL=i
-#             if np.isnan(self.Z[0][i,0])==True:
-#                 SL2=i
-#                 break
-
-#         x1=range(SL)
-#         x2=range(SL,SL2)
-#         x_max1=self.Z[0][SL2-1][0]
-#         count=0
-#         # fig = make_subplots(rows=2, cols=1, start_cell="bottom-left")
-#         fig = tools.make_subplots(rows=1, cols=2)
-#         fig.append_trace(go.Scatter(x=self.Z[count][x1,0], y=self.Z[count][x1,1]), 1, 1)
-#         fig.append_trace(go.Scatter(x=self.Z[count][x2,0], y=self.Z[count][x2,1]), 1, 2)
-
-#         # fig.add_trace(go.Scatter(x=self.Z[count][x1,0], y=self.Z[count][x1,1]), row=1, col=1)
-#         # fig.add_trace(go.Scatter(x=self.Z[count][x2,0], y=self.Z[count][x2,1]), row=2, col=1)
-#         fig.update_layout(height=500, width=700,
-#                   title_text="Multiple Subplots with Titles")
-
-#         fig.show()
+            return fig
