@@ -1,9 +1,11 @@
 import pynecone as pc
 from plot_gms.markov import MarkovPlotUpload
+from plot_gms.components.navbar import navbar
 
 
 def index() -> pc.Component:
     return pc.center(
+        navbar(),
         pc.box(
             pc.vstack(
                 pc.heading('Welcome to PlotGMS!', font_size='1em'),
