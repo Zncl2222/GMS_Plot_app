@@ -1,5 +1,5 @@
 import pynecone as pc
-from plot_gms.constants import GITHUB_URL
+from plot_gms.constants import GITHUB_URL, MARKOV_URL, GENERAL_URL
 
 
 def navbar():
@@ -26,6 +26,7 @@ def navbar():
                                     _hover={'background_color': 'white'},
                                     _focus={},
                                 ),
+                                href=GENERAL_URL,
                             ),
                             pc.link(
                                 pc.menu_item(
@@ -33,10 +34,11 @@ def navbar():
                                     _hover={'background_color': 'white'},
                                     _focus={},
                                 ),
+                                href=MARKOV_URL,
                             ),
                             pc.link(
                                 pc.menu_item(
-                                    'SemiVariance(GMS)',
+                                    'SemiVariance(GMS)(Comming Soon)',
                                     _hover={'background_color': 'white'},
                                     _focus={},
                                 ),
