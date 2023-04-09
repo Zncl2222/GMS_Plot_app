@@ -28,6 +28,7 @@ class MarkovPlotUpload(State):
             df2.append(df[(df[0]) == 'Markov Chain'])
 
         self.fig = MarkovPlot.markov_plot(df1, df2)
+        self.has_fig = True
         self.fig_layout = self.fig._layout
 
 
