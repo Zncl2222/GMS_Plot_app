@@ -8,6 +8,7 @@ from plot_gms.state import State
 
 
 class MarkovPlotUpload(State):
+    has_fig = False
     fig = make_subplots(rows=1, cols=1)
     fig_layout = {}
 
