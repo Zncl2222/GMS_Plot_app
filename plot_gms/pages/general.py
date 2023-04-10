@@ -20,6 +20,25 @@ def general() -> pc.Component:
                     padding='2em',
                     multiple_files=True,
                 ),
+                pc.select(
+                    GeneralUpload.plot_options_list,
+                    on_change=GeneralUpload.set_plot_option,
+                ),
+                pc.cond(
+                    GeneralUpload.plot_option == GeneralUpload.plot_options_list[1],
+                    pc.hstack(
+                        pc.input(
+                            placeholder='Row number',
+                            value=GeneralUpload.rows_number,
+                            on_change=GeneralUpload.set_rows_number,
+                        ),
+                        pc.input(
+                            placeholder='Col number',
+                            value=GeneralUpload.cols_number,
+                            on_change=GeneralUpload.set_cols_number,
+                        ),
+                    ),
+                ),
                 pc.button(
                     'Plot',
                     font_size='0.75em',
