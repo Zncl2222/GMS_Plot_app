@@ -18,9 +18,10 @@ class GeneralUpload(State):
 
         df_list = []
         for data in upload_data:
-            df = pd.read_table(BytesIO(data), header=None)
+            df = pd.read_table(BytesIO(data), header=None, sep=r'\s+').astype(float)
             df_list.append(df)
         self.fig = GeneralPlot.plot(df_list)
+        self.has_fig = True
         self.fig_layout = self.fig._layout
 
 
@@ -34,8 +35,8 @@ class GeneralPlot:
                 for c in range(number):
                     legend = True if (r == 0 and c == 0) else False
                     scatter1 = go.Scatter(
-                        x=df_list[r + c].iloc[:, 2],
-                        y=df_list[r + c].iloc[:, 3],
+                        x=df_list[r + c].iloc[:, 0],
+                        y=df_list[r + c].iloc[:, 1],
                         line=dict(color='black'),
                         showlegend=legend,
                         name='Model',
@@ -43,13 +44,11 @@ class GeneralPlot:
                     fig.append_trace(scatter1, r + 1, c + 1)
                     # Update xaxis properties
                     fig.update_xaxes(
-                        range=[0, 75],
                         showgrid=True,
                         gridwidth=1,
                         gridcolor='rgba(0, 0, 0, 0.2)',
                     )
                     fig.update_yaxes(
-                        range=[0, 1],
                         showgrid=True,
                         gridwidth=1,
                         gridcolor='rgba(0, 0, 0, 0.2)',
