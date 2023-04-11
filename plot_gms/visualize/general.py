@@ -4,24 +4,34 @@ from plotly.subplots import make_subplots
 import pynecone as pc
 from io import BytesIO
 from plot_gms.state import State
+from plot_gms.components.modal import ModalState
 
 
 class GeneralUpload(State):
     has_fig = False
+    uploaded_data: list = []
     fig = make_subplots(rows=1, cols=1)
     fig_layout = {}
     rows_number: str
     cols_number: str
     plot_options_list = ['SinglePlot', 'MutiPlot(SubPlot)']
     plot_option: str = 'No selection yet.'
+    uploaded: str = 'Drag and drop files here or click to select files'
 
-    async def handle_upload(self, file: list[pc.UploadFile]):
-        upload_data = []
+    async def handle_upload_check(self, file: list[pc.UploadFile]):
         for data in file:
-            upload_data.append(await data.read())
+            self.uploaded_data.append(await data.read())
+        if self.plot_option == 'MutiPlot(SubPlot)':
+            if int(self.rows_number) * int(self.cols_number) < len(self.uploaded_data):
+                return ModalState.change(
+                    'Error',
+                    'Rows and Cols of subplot should greater than the uploaded files number',
+                )
+        return self.handle_upload()
 
+    async def handle_upload(self):
         df_list = []
-        for data in upload_data:
+        for data in self.uploaded_data:
             df = pd.read_table(BytesIO(data), header=None, sep=r'\s+').astype(float)
             df_list.append(df)
 
@@ -35,6 +45,10 @@ class GeneralUpload(State):
             self.fig = GeneralPlot.line_plot(df_list)
         self.has_fig = True
         self.fig_layout = self.fig._layout
+        self.clean_all()
+
+    def clean_all(self):
+        self.uploaded_data = []
 
     def set_rows_number(self, n):
         self.rows_number = n
@@ -44,6 +58,9 @@ class GeneralUpload(State):
 
     def set_plot_option(self, option):
         self.plot_option = option
+
+    def set_uploaded(self, uploaded):
+        self.uploaded = uploaded
 
 
 class GeneralPlot:
