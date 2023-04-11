@@ -12,7 +12,7 @@ class MarkovPlotUpload(State):
     fig = make_subplots(rows=1, cols=1)
     fig_layout = {}
 
-    async def handle_upload(self, file: list[pc.UploadFile]):
+    async def markov_handle_upload(self, file: list[pc.UploadFile]):
         upload_data = []
         for data in file:
             upload_data.append(await data.read())

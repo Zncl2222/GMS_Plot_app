@@ -41,7 +41,11 @@ def general() -> pc.Component:
                     ),
                 ),
                 pc.button(
-                    'Plot',
+                    pc.cond(
+                        GeneralUpload.plot_state,
+                        pc.circular_progress(is_indeterminate=True),
+                        pc.text('Plot'),
+                    ),
                     font_size='0.75em',
                     width='10em',
                     color='white',

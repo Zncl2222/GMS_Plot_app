@@ -9,6 +9,7 @@ from plot_gms.components.modal import ModalState
 
 class GeneralUpload(State):
     has_fig = False
+    plot_state = False
     uploaded_data: list = []
     fig = make_subplots(rows=1, cols=1)
     fig_layout = {}
@@ -19,10 +20,12 @@ class GeneralUpload(State):
     uploaded: str = 'Drag and drop files here or click to select files'
 
     async def handle_upload_check(self, file: list[pc.UploadFile]):
+        self.plot_state = True
         for data in file:
             self.uploaded_data.append(await data.read())
         if self.plot_option == 'MutiPlot(SubPlot)':
             if int(self.rows_number) * int(self.cols_number) < len(self.uploaded_data):
+                self.plot_state = False
                 return ModalState.change(
                     'Error',
                     'Rows and Cols of subplot should greater than the uploaded files number',
@@ -45,10 +48,11 @@ class GeneralUpload(State):
             self.fig = GeneralPlot.line_plot(df_list)
         self.has_fig = True
         self.fig_layout = self.fig._layout
-        self.clean_all()
+        return self.clean_all
 
     def clean_all(self):
         self.uploaded_data = []
+        self.plot_state = False
 
     def set_rows_number(self, n):
         self.rows_number = n
