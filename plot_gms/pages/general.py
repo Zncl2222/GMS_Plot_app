@@ -1,6 +1,7 @@
 import pynecone as pc
 from plot_gms.visualize import GeneralUpload
 from plot_gms.components.navbar import navbar
+from plot_gms.components.modal import alert_modal
 
 
 def general() -> pc.Component:
@@ -12,7 +13,7 @@ def general() -> pc.Component:
                 pc.box('Upload txt file and plot'),
                 pc.upload(
                     pc.text(
-                        'Drag and drop files here or click to select files',
+                        GeneralUpload.uploaded,
                         font_size='0.75em',
                     ),
                     border='2px dotted rgb(0, 0, 0)',
@@ -47,10 +48,11 @@ def general() -> pc.Component:
                     background_color='rgb(36, 90, 162)',
                     border_radius='1em',
                     padding='1em',
-                    on_click=lambda: GeneralUpload.handle_upload(
+                    on_click=lambda: GeneralUpload.handle_upload_check(
                         pc.upload_files(),
                     ),
                 ),
+                alert_modal(),
                 pc.cond(
                     GeneralUpload.has_fig,
                     pc.plotly(data=GeneralUpload.fig, layout=GeneralUpload.fig_layout),
