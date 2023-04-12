@@ -11,13 +11,15 @@ class GeneralUpload(State):
     has_fig: bool = False
     plot_state: bool = False
     uploaded_data: list = []
-    fig = make_subplots(rows=1, cols=1)
+    fig: go.Figure = make_subplots(rows=1, cols=1)
     fig_layout: dict = {}
     rows_number: str
     cols_number: str
     plot_options_list: list = ['SinglePlot', 'MutiPlot(SubPlot)']
     plot_option: str = 'No selection yet.'
     uploaded: str = 'Drag and drop files here or click to select files'
+    fig_height: str = '800'
+    fig_width: str = '1200'
 
     async def handle_upload_check(self, file: list[pc.UploadFile]):
         self.plot_state = True
@@ -45,7 +47,7 @@ class GeneralUpload(State):
             }
             self.fig = GeneralPlot.line_subplot(df_list, form_data)
         else:
-            self.fig = GeneralPlot.line_plot(df_list)
+            self.fig = GeneralPlot.line_plot(df_list, int(self.fig_height), int(self.fig_width))
         self.has_fig = True
         self.fig_layout = self.fig._layout
         return self.clean_all
@@ -53,6 +55,12 @@ class GeneralUpload(State):
     def clean_all(self):
         self.uploaded_data = []
         self.plot_state = False
+
+    def set_fig_height(self, height):
+        self.fig_height = height
+
+    def set_fig_width(self, width):
+        self.fig_width = width
 
     def set_rows_number(self, n):
         self.rows_number = n
@@ -106,7 +114,7 @@ class GeneralPlot:
         return fig
 
     @classmethod
-    def line_plot(cls, df_list):
+    def line_plot(cls, df_list, height, width):
         data = []
         for i in range(len(df_list)):
             legend = True
@@ -130,8 +138,8 @@ class GeneralPlot:
         )
 
         fig.update_layout(
-            height=800,
-            width=1200,
+            height=height,
+            width=width,
             plot_bgcolor='rgba(0, 0, 0, 0)',
             legend=dict(y=0.5, traceorder='reversed'),
         )
