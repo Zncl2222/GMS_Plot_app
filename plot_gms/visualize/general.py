@@ -8,14 +8,14 @@ from plot_gms.components.modal import ModalState
 
 
 class GeneralUpload(State):
-    has_fig = False
-    plot_state = False
+    has_fig: bool = False
+    plot_state: bool = False
     uploaded_data: list = []
     fig = make_subplots(rows=1, cols=1)
-    fig_layout = {}
+    fig_layout: dict = {}
     rows_number: str
     cols_number: str
-    plot_options_list = ['SinglePlot', 'MutiPlot(SubPlot)']
+    plot_options_list: list = ['SinglePlot', 'MutiPlot(SubPlot)']
     plot_option: str = 'No selection yet.'
     uploaded: str = 'Drag and drop files here or click to select files'
 
@@ -69,7 +69,7 @@ class GeneralUpload(State):
 
 class GeneralPlot:
     @classmethod
-    def line_subplot(self, df_list, form_data):
+    def line_subplot(cls, df_list, form_data):
         rows_number = form_data['rows_number']
         cols_number = form_data['cols_number']
         fig = make_subplots(rows=rows_number, cols=cols_number)
@@ -84,7 +84,6 @@ class GeneralPlot:
                     name='Model',
                 )
                 fig.append_trace(scatter1, r + 1, c + 1)
-                # Update xaxis properties
                 fig.update_xaxes(
                     showgrid=True,
                     gridwidth=1,
@@ -107,7 +106,7 @@ class GeneralPlot:
         return fig
 
     @classmethod
-    def line_plot(self, df_list):
+    def line_plot(cls, df_list):
         data = []
         for i in range(len(df_list)):
             legend = True
@@ -119,7 +118,6 @@ class GeneralPlot:
                 ),
             )
         fig = go.Figure(data=data)
-        # Update xaxis properties
         fig.update_xaxes(
             showgrid=True,
             gridwidth=1,
