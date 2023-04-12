@@ -28,7 +28,7 @@ def markov() -> pc.Component:
                     background_color='rgb(36, 90, 162)',
                     border_radius='1em',
                     padding='1em',
-                    on_click=lambda: MarkovPlotUpload.handle_upload(
+                    on_click=lambda: MarkovPlotUpload.markov_handle_upload(
                         pc.upload_files(),
                     ),
                 ),
