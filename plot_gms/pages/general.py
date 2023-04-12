@@ -4,6 +4,36 @@ from plot_gms.components.navbar import navbar
 from plot_gms.components.modal import alert_modal
 
 
+def general_plot_options() -> pc.Component:
+    return pc.cond(
+        GeneralUpload.plot_option == GeneralUpload.plot_options_list[1],
+        pc.vstack(
+            pc.hstack(
+                pc.box(
+                    pc.text('Row number', font_size='0.5em'),
+                    width='50%',
+                ),
+                pc.box(
+                    pc.text('Col number', font_size='0.5em'),
+                ),
+            ),
+            pc.hstack(
+                pc.input(
+                    placeholder='Row number',
+                    value=GeneralUpload.rows_number,
+                    on_change=GeneralUpload.set_rows_number,
+                ),
+                pc.input(
+                    placeholder='Col number',
+                    value=GeneralUpload.cols_number,
+                    on_change=GeneralUpload.set_cols_number,
+                ),
+            ),
+            align_items='left',
+        ),
+    )
+
+
 def general() -> pc.Component:
     return pc.center(
         navbar(),
@@ -25,21 +55,7 @@ def general() -> pc.Component:
                     GeneralUpload.plot_options_list,
                     on_change=GeneralUpload.set_plot_option,
                 ),
-                pc.cond(
-                    GeneralUpload.plot_option == GeneralUpload.plot_options_list[1],
-                    pc.hstack(
-                        pc.input(
-                            placeholder='Row number',
-                            value=GeneralUpload.rows_number,
-                            on_change=GeneralUpload.set_rows_number,
-                        ),
-                        pc.input(
-                            placeholder='Col number',
-                            value=GeneralUpload.cols_number,
-                            on_change=GeneralUpload.set_cols_number,
-                        ),
-                    ),
-                ),
+                general_plot_options(),
                 pc.button(
                     pc.cond(
                         GeneralUpload.plot_state,
