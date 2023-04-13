@@ -34,6 +34,22 @@ def general_plot_options() -> pc.Component:
     )
 
 
+pc.accordion(
+    pc.accordion_item(
+        pc.accordion_button(
+            pc.heading('Example'),
+            pc.accordion_icon(),
+        ),
+        pc.accordion_panel(
+            pc.text(
+                'This is an example of an accordion component.',
+            ),
+        ),
+    ),
+    width='100%',
+)
+
+
 def general() -> pc.Component:
     return pc.center(
         navbar(),
@@ -56,6 +72,29 @@ def general() -> pc.Component:
                     on_change=GeneralUpload.set_plot_option,
                 ),
                 general_plot_options(),
+                pc.accordion(
+                    pc.accordion_item(
+                        pc.accordion_button(
+                            pc.text('Figure Options'),
+                            pc.accordion_icon(),
+                        ),
+                        pc.accordion_panel(
+                            pc.vstack(
+                                pc.hstack(
+                                    pc.input(
+                                        placeholder='Fig height',
+                                        on_change=GeneralUpload.set_fig_height,
+                                    ),
+                                    pc.input(
+                                        placeholder='Fig width',
+                                        on_change=GeneralUpload.set_fig_width,
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                    width='100%',
+                ),
                 pc.button(
                     pc.cond(
                         GeneralUpload.plot_state,
