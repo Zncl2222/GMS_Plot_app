@@ -18,6 +18,7 @@ class GeneralUpload(State):
     plot_options_list: list = ['SinglePlot', 'MutiPlot(SubPlot)']
     plot_option: str = 'No selection yet.'
     uploaded: str = 'Drag and drop files here or click to select files'
+    fig_title: str = ''
     fig_height: str = '800'
     fig_width: str = '1200'
 
@@ -56,6 +57,9 @@ class GeneralUpload(State):
         self.uploaded_data = []
         self.plot_state = False
 
+    def set_fig_title(self, title):
+        self.fig_title = title
+
     def set_fig_height(self, height):
         self.fig_height = height
 
@@ -75,7 +79,7 @@ class GeneralUpload(State):
         self.uploaded = uploaded
 
 
-class GeneralPlot:
+class GeneralPlot(GeneralUpload):
     @classmethod
     def line_subplot(cls, df_list, form_data):
         rows_number = form_data['rows_number']
@@ -136,7 +140,6 @@ class GeneralPlot:
             gridwidth=1,
             gridcolor='rgba(0, 0, 0, 0.2)',
         )
-
         fig.update_layout(
             height=height,
             width=width,
