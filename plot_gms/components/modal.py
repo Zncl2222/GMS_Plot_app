@@ -23,9 +23,16 @@ def alert_modal():
                 pc.modal_content(
                     pc.center(
                         pc.vstack(
-                            pc.modal_header(ModalState.title, font_size='1.5em', color='red'),
+                            pc.modal_header(
+                                ModalState.title,
+                                font_size='2em',
+                                font_weight='bold',
+                                color='red',
+                            ),
+                            pc.image(src='/warning.png', width='50px', height='auto'),
                             pc.modal_body(
                                 ModalState.content,
+                                text_align='center',
                             ),
                             pc.modal_footer(
                                 pc.button(
