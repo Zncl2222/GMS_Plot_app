@@ -13,6 +13,7 @@ class GeneralUploadBase(State):
     is_progressing: bool = False
     fig_layout: dict = {}
     fig_title: str = ''
+    fig_title_font_size: str = '10'
     fig_height: str = '600'
     fig_width: str = '1200'
     rows_number: str
@@ -33,6 +34,9 @@ class GeneralUploadBase(State):
 
     def set_fig_title(self, title):
         self.fig_title = title
+
+    def set_fig_title_font_size(self, size):
+        self.fig_title_font_size = size
 
     def set_fig_height(self, height):
         self.fig_height = height
@@ -107,6 +111,12 @@ class GeneralPlot(GeneralUploadBase):
         self.fig.update_layout(
             height=int(self.fig_height),
             width=int(self.fig_width),
+            title=dict(
+                text=self.fig_title,
+                font=dict(size=int(self.fig_title_font_size)),
+                automargin=True,
+                yref='paper',
+            ),
             plot_bgcolor='rgba(0, 0, 0, 0)',
             legend=dict(y=0.5, traceorder='reversed'),
         )
