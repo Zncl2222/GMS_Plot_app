@@ -34,11 +34,35 @@ def general_subplot_options() -> pc.Component:
     )
 
 
-def general_options() -> pc.Component:
+def general_fig_size_options() -> pc.Component:
+    return pc.hstack(
+        pc.hstack(
+            pc.box(
+                pc.text('Fig height', font_size='0.5em'),
+                width='50%',
+            ),
+            pc.box(
+                pc.text('Fig width', font_size='0.5em'),
+            ),
+        ),
+        pc.hstack(
+            pc.input(
+                placeholder='Fig height (default: 600)',
+                on_change=GeneralPlot.set_fig_height,
+            ),
+            pc.input(
+                placeholder='Fig width (default: 1200)',
+                on_change=GeneralPlot.set_fig_width,
+            ),
+        ),
+    )
+
+
+def general_title_options() -> pc.Component:
     return pc.accordion(
         pc.accordion_item(
             pc.accordion_button(
-                pc.text('Figure Options'),
+                pc.text('Figure titles'),
                 pc.accordion_icon(),
             ),
             pc.accordion_panel(
@@ -58,23 +82,33 @@ def general_options() -> pc.Component:
                     ),
                     pc.hstack(
                         pc.box(
-                            pc.text('Fig height', font_size='0.5em'),
-                            width='50%',
-                        ),
-                        pc.box(
-                            pc.text('Fig width', font_size='0.5em'),
+                            pc.text('Title font size', font_size='0.5em'),
                         ),
                     ),
                     pc.hstack(
                         pc.input(
-                            placeholder='Fig height',
-                            on_change=GeneralPlot.set_fig_height,
-                        ),
-                        pc.input(
-                            placeholder='Fig width',
-                            on_change=GeneralPlot.set_fig_width,
+                            placeholder='Title font size',
+                            on_change=GeneralPlot.set_fig_title_font_size,
                         ),
                     ),
+                    align_items='left',
+                ),
+            ),
+        ),
+    )
+
+
+def general_options() -> pc.Component:
+    return pc.accordion(
+        pc.accordion_item(
+            pc.accordion_button(
+                pc.text('Figure Options', font_weight='bold'),
+                pc.accordion_icon(),
+            ),
+            pc.accordion_panel(
+                pc.vstack(
+                    general_title_options(),
+                    general_fig_size_options(),
                     align_items='left',
                 ),
             ),
