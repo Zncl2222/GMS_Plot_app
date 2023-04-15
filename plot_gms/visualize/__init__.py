@@ -1,4 +1,4 @@
 from .markov_plot import MarkovPlotUpload
-from .general import GeneralUpload
+from .general import GeneralPlot
 
-__all__ = ['MarkovPlotUpload', 'GeneralUpload']
+__all__ = ['MarkovPlotUpload', 'GeneralPlot']

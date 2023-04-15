@@ -1,12 +1,12 @@
 import pynecone as pc
-from plot_gms.visualize import GeneralUpload
+from plot_gms.visualize import GeneralPlot
 from plot_gms.components.navbar import navbar
 from plot_gms.components.modal import alert_modal
 
 
 def general_subplot_options() -> pc.Component:
     return pc.cond(
-        GeneralUpload.plot_option == GeneralUpload.plot_options_list[1],
+        GeneralPlot.plot_option == GeneralPlot.plot_options_list[1],
         pc.vstack(
             pc.hstack(
                 pc.box(
@@ -20,13 +20,13 @@ def general_subplot_options() -> pc.Component:
             pc.hstack(
                 pc.input(
                     placeholder='Row number',
-                    value=GeneralUpload.rows_number,
-                    on_change=GeneralUpload.set_rows_number,
+                    value=GeneralPlot.rows_number,
+                    on_change=GeneralPlot.set_rows_number,
                 ),
                 pc.input(
                     placeholder='Col number',
-                    value=GeneralUpload.cols_number,
-                    on_change=GeneralUpload.set_cols_number,
+                    value=GeneralPlot.cols_number,
+                    on_change=GeneralPlot.set_cols_number,
                 ),
             ),
             align_items='left',
@@ -53,7 +53,7 @@ def general_options() -> pc.Component:
                     pc.hstack(
                         pc.input(
                             placeholder='Fig title',
-                            on_change=GeneralUpload.set_fig_title,
+                            on_change=GeneralPlot.set_fig_title,
                         ),
                     ),
                     pc.hstack(
@@ -68,11 +68,11 @@ def general_options() -> pc.Component:
                     pc.hstack(
                         pc.input(
                             placeholder='Fig height',
-                            on_change=GeneralUpload.set_fig_height,
+                            on_change=GeneralPlot.set_fig_height,
                         ),
                         pc.input(
                             placeholder='Fig width',
-                            on_change=GeneralUpload.set_fig_width,
+                            on_change=GeneralPlot.set_fig_width,
                         ),
                     ),
                     align_items='left',
@@ -92,7 +92,7 @@ def general() -> pc.Component:
                 pc.box('Upload txt file and plot'),
                 pc.upload(
                     pc.text(
-                        GeneralUpload.uploaded,
+                        GeneralPlot.uploaded,
                         font_size='0.75em',
                     ),
                     border='2px dotted rgb(0, 0, 0)',
@@ -101,14 +101,14 @@ def general() -> pc.Component:
                     multiple_files=True,
                 ),
                 pc.select(
-                    GeneralUpload.plot_options_list,
-                    on_change=GeneralUpload.set_plot_option,
+                    GeneralPlot.plot_options_list,
+                    on_change=GeneralPlot.set_plot_option,
                 ),
                 general_subplot_options(),
                 general_options(),
                 pc.button(
                     pc.cond(
-                        GeneralUpload.plot_state,
+                        GeneralPlot.is_progressing,
                         pc.circular_progress(is_indeterminate=True),
                         pc.text('Plot'),
                     ),
@@ -118,14 +118,14 @@ def general() -> pc.Component:
                     background_color='rgb(36, 90, 162)',
                     border_radius='1em',
                     padding='1em',
-                    on_click=lambda: GeneralUpload.handle_upload_check(
+                    on_click=lambda: GeneralPlot.handle_upload_check(
                         pc.upload_files(),
                     ),
                 ),
                 alert_modal(),
                 pc.cond(
-                    GeneralUpload.has_fig,
-                    pc.plotly(data=GeneralUpload.fig, layout=GeneralUpload.fig_layout),
+                    GeneralPlot.has_fig,
+                    pc.plotly(data=GeneralPlot.fig, layout=GeneralPlot.fig_layout),
                 ),
                 spacing='1.5em',
                 font_size='2em',
