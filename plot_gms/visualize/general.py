@@ -7,55 +7,29 @@ from plot_gms.state import State
 from plot_gms.components.modal import ModalState
 
 
-class GeneralUpload(State):
+class GeneralUploadBase(State):
+    fig: go.Figure = make_subplots()
     has_fig: bool = False
-    plot_state: bool = False
-    uploaded_data: list = []
-    fig: go.Figure = make_subplots(rows=1, cols=1)
+    is_progressing: bool = False
     fig_layout: dict = {}
+    fig_title: str = ''
+    fig_height: str = '600'
+    fig_width: str = '1200'
     rows_number: str
     cols_number: str
+
     plot_options_list: list = ['SinglePlot', 'MutiPlot(SubPlot)']
     plot_option: str = 'No selection yet.'
     uploaded: str = 'Drag and drop files here or click to select files'
-    fig_title: str = ''
-    fig_height: str = '800'
-    fig_width: str = '1200'
 
-    async def handle_upload_check(self, file: list[pc.UploadFile]):
-        self.plot_state = True
-        for data in file:
-            self.uploaded_data.append(await data.read())
-        if self.plot_option == 'MutiPlot(SubPlot)':
-            if int(self.rows_number) * int(self.cols_number) < len(self.uploaded_data):
-                self.plot_state = False
-                return ModalState.change(
-                    'Error',
-                    'Rows and Cols of subplot should greater than the uploaded files number',
-                )
-        return self.handle_upload()
-
-    async def handle_upload(self):
-        df_list = []
-        for data in self.uploaded_data:
-            df = pd.read_table(BytesIO(data), header=None, sep=r'\s+').astype(float)
-            df_list.append(df)
-
-        if self.plot_option == 'MutiPlot(SubPlot)':
-            form_data = {
-                'rows_number': int(self.rows_number),
-                'cols_number': int(self.cols_number),
-            }
-            self.fig = GeneralPlot.line_subplot(df_list, form_data)
-        else:
-            self.fig = GeneralPlot.line_plot(df_list, int(self.fig_height), int(self.fig_width))
-        self.has_fig = True
-        self.fig_layout = self.fig._layout
-        return self.clean_all
+    _uploaded_data: list = []
+    _df_list: list[pd.DataFrame] = []
 
     def clean_all(self):
-        self.uploaded_data = []
-        self.plot_state = False
+        self.has_fig = True
+        self.fig_layout = self.fig._layout
+        self._uploaded_data = []
+        self.is_progressing = False
 
     def set_fig_title(self, title):
         self.fig_title = title
@@ -79,72 +53,98 @@ class GeneralUpload(State):
         self.uploaded = uploaded
 
 
-class GeneralPlot(GeneralUpload):
-    @classmethod
-    def line_subplot(cls, df_list, form_data):
-        rows_number = form_data['rows_number']
-        cols_number = form_data['cols_number']
-        fig = make_subplots(rows=rows_number, cols=cols_number)
+class GeneralPlot(GeneralUploadBase):
+    async def handle_upload_check(self, file: list[pc.UploadFile]):
+        self.is_progressing = True
+        for data in file:
+            self._uploaded_data.append(await data.read())
+        if self.plot_option == 'MutiPlot(SubPlot)':
+            try:
+                if int(self.rows_number) * int(self.cols_number) < len(self._uploaded_data):
+                    self.is_progressing = False
+                    return ModalState.change(
+                        'Error',
+                        'Rows and Cols of subplot should greater than the uploaded files number !',
+                    )
+            except ValueError:
+                return ModalState.change(
+                    'Error',
+                    'Rows and Cols should be a number !',
+                )
+        return self.handle_upload()
+
+    async def handle_upload(self):
+        for data in self._uploaded_data:
+            df = pd.read_table(BytesIO(data), header=None, sep=r'\s+').astype(float)
+            self._df_list.append(df)
+        if self.plot_option == 'MutiPlot(SubPlot)':
+            return self.line_subplot
+        else:
+            return self.line_plot
+
+    def line_plot(self):
+        data = []
+        for i in range(len(self._df_list)):
+            legend = True
+            data.append(
+                go.Scatter(
+                    x=self._df_list[i].iloc[:, 0],
+                    y=self._df_list[i].iloc[:, 1],
+                    showlegend=legend,
+                ),
+            )
+        self.fig = go.Figure(data=data)
+        self.fig.update_xaxes(
+            showgrid=True,
+            gridwidth=1,
+            gridcolor='rgba(0, 0, 0, 0.2)',
+        )
+        self.fig.update_yaxes(
+            showgrid=True,
+            gridwidth=1,
+            gridcolor='rgba(0, 0, 0, 0.2)',
+        )
+        self.fig.update_layout(
+            height=int(self.fig_height),
+            width=int(self.fig_width),
+            plot_bgcolor='rgba(0, 0, 0, 0)',
+            legend=dict(y=0.5, traceorder='reversed'),
+        )
+
+        return self.clean_all
+
+    def line_subplot(self):
+        rows_number = int(self.rows_number)
+        cols_number = int(self.cols_number)
+        self.fig = make_subplots(rows=rows_number, cols=cols_number)
         for r in range(rows_number):
             for c in range(cols_number):
                 legend = True if (r == 0 and c == 0) else False
                 scatter1 = go.Scatter(
-                    x=df_list[r + c].iloc[:, 0],
-                    y=df_list[r + c].iloc[:, 1],
+                    x=self._df_list[r + c].iloc[:, 0],
+                    y=self._df_list[r + c].iloc[:, 1],
                     line=dict(color='black'),
                     showlegend=legend,
                     name='Model',
                 )
-                fig.append_trace(scatter1, r + 1, c + 1)
-                fig.update_xaxes(
+                self.fig.append_trace(scatter1, r + 1, c + 1)
+                self.fig.update_xaxes(
                     showgrid=True,
                     gridwidth=1,
                     gridcolor='rgba(0, 0, 0, 0.2)',
                 )
-                fig.update_yaxes(
+                self.fig.update_yaxes(
                     showgrid=True,
                     gridwidth=1,
                     gridcolor='rgba(0, 0, 0, 0.2)',
                 )
 
-        fig.update_layout(
-            height=800,
-            width=1200,
+        self.fig.update_layout(
+            height=int(self.fig_height),
+            width=int(self.fig_width),
             title_text='Multiple Subplots with Titles',
             plot_bgcolor='rgba(0, 0, 0, 0)',
             legend=dict(y=0.5, traceorder='reversed'),
         )
 
-        return fig
-
-    @classmethod
-    def line_plot(cls, df_list, height, width):
-        data = []
-        for i in range(len(df_list)):
-            legend = True
-            data.append(
-                go.Scatter(
-                    x=df_list[i].iloc[:, 0],
-                    y=df_list[i].iloc[:, 1],
-                    showlegend=legend,
-                ),
-            )
-        fig = go.Figure(data=data)
-        fig.update_xaxes(
-            showgrid=True,
-            gridwidth=1,
-            gridcolor='rgba(0, 0, 0, 0.2)',
-        )
-        fig.update_yaxes(
-            showgrid=True,
-            gridwidth=1,
-            gridcolor='rgba(0, 0, 0, 0.2)',
-        )
-        fig.update_layout(
-            height=height,
-            width=width,
-            plot_bgcolor='rgba(0, 0, 0, 0)',
-            legend=dict(y=0.5, traceorder='reversed'),
-        )
-
-        return fig
+        return self.clean_all
