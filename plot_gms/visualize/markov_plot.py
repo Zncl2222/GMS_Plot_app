@@ -16,6 +16,8 @@ class MarkovPlotBase(State):
     fig_layout: dict = {}
     fig_width: str = '1200'
     fig_height: str = '600'
+    x_scale: str = '1'
+    x_lim: str = '100'
 
     _upload_data: list = []
     _df1: list[pd.DataFrame] = []
@@ -27,17 +29,23 @@ class MarkovPlotBase(State):
         self._upload_data = []
         self.is_progressing = False
 
-    def set_fig_title_font_size(self, size):
+    def set_mk_fig_title_font_size(self, size):
         self.fig_font_size = size
 
-    def set_fig_title(self, title):
+    def set_mk_fig_title(self, title):
         self.fig_title = title
 
-    def set_fig_width(self, width):
+    def set_mk_fig_width(self, width):
         self.fig_width = width
 
-    def set_fig_heigth(self, height):
+    def set_mk_fig_heigth(self, height):
         self.fig_height = height
+
+    def set_mk_x_scale(self, scale):
+        self.x_scale = scale
+
+    def set_mk_x_lim(self, xlim):
+        self.x_lim = xlim
 
 
 class MarkovPlot(MarkovPlotBase):
@@ -66,14 +74,14 @@ class MarkovPlot(MarkovPlotBase):
                 for c in range(number):
                     legend = True if (r == 0 and c == 0) else False
                     scatter1 = go.Scatter(
-                        x=self._df1[r + c].iloc[:, 2],
+                        x=self._df1[r + c].iloc[:, 2] * float(self.x_scale),
                         y=self._df1[r + c].iloc[:, 3],
                         line=dict(color='black'),
                         showlegend=legend,
                         name='Model',
                     )
                     scatter2 = go.Scatter(
-                        x=self._df2[r + c].iloc[:, 2],
+                        x=self._df2[r + c].iloc[:, 2] * float(self.x_scale),
                         y=self._df2[r + c].iloc[:, 3],
                         line=dict(color='red', dash='dash'),
                         showlegend=legend,
@@ -83,7 +91,7 @@ class MarkovPlot(MarkovPlotBase):
                     self.fig.append_trace(scatter2, r + 1, c + 1)
                     # Update xaxis properties
                     self.fig.update_xaxes(
-                        range=[0, 75],
+                        range=[0, float(self.x_lim)],
                         showgrid=True,
                         gridwidth=1,
                         gridcolor='rgba(0, 0, 0, 0.2)',
