@@ -15,7 +15,7 @@ def plot_title() -> pc.Component:
         pc.hstack(
             pc.input(
                 placeholder='Fig title',
-                on_change=MarkovPlot.set_fig_title,
+                on_change=MarkovPlot.set_mk_fig_title,
                 width='100%',
             ),
         ),
@@ -27,7 +27,7 @@ def plot_title() -> pc.Component:
         pc.hstack(
             pc.input(
                 placeholder='Title font size',
-                on_change=MarkovPlot.set_fig_title_font_size,
+                on_change=MarkovPlot.set_mk_fig_title_font_size,
             ),
         ),
         pc.hstack(
@@ -43,11 +43,31 @@ def plot_title() -> pc.Component:
         pc.hstack(
             pc.input(
                 placeholder='Fig height (default: 600)',
-                on_change=MarkovPlot.set_fig_heigth,
+                on_change=MarkovPlot.set_mk_fig_heigth,
             ),
             pc.input(
                 placeholder='Fig width (default: 1200)',
-                on_change=MarkovPlot.set_fig_width,
+                on_change=MarkovPlot.set_mk_fig_width,
+            ),
+        ),
+        pc.hstack(
+            pc.box(
+                pc.text('X scale', font_size='0.5em'),
+                width='100%',
+            ),
+            pc.box(
+                pc.text('X limit', font_size='0.5em'),
+                width='100%',
+            ),
+        ),
+        pc.hstack(
+            pc.input(
+                placeholder='X scale (default: 1)',
+                on_change=MarkovPlot.set_mk_x_scale,
+            ),
+            pc.input(
+                placeholder='X limit (default: 100)',
+                on_change=MarkovPlot.set_mk_x_lim,
             ),
         ),
         align_items='left',
