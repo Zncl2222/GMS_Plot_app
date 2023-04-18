@@ -5,6 +5,7 @@ import pynecone as pc
 from io import BytesIO
 from plot_gms.state import State
 from plot_gms.components.modal import ModalState
+from plot_gms.helper import is_numeric
 
 
 class GeneralUploadBase(State):
@@ -62,6 +63,9 @@ class GeneralPlot(GeneralUploadBase):
         self.is_progressing = True
         for data in file:
             self._uploaded_data.append(await data.read())
+        return self.gen_var_validataion
+
+    async def gen_var_validataion(self):
         if self.plot_option == 'MutiPlot(SubPlot)':
             try:
                 if int(self.rows_number) * int(self.cols_number) < len(self._uploaded_data):
@@ -71,11 +75,23 @@ class GeneralPlot(GeneralUploadBase):
                         'Rows and Cols of subplot should greater than the uploaded files number !',
                     )
             except ValueError:
+                self.is_progressing = False
                 return ModalState.change(
                     'Error',
                     'Rows and Cols should be a number !',
                 )
-        return self.handle_upload()
+
+        if is_numeric(self.fig_title_font_size) is False:
+            self.is_progressing = False
+            return ModalState.change('Error', 'Fig title font size should be a number !')
+        if is_numeric(self.fig_height) is False:
+            self.is_progressing = False
+            return ModalState.change('Error', 'Fig height should be a number !')
+        if is_numeric(self.fig_width) is False:
+            self.is_progressing = False
+            return ModalState.change('Error', 'Fig width should be a number !')
+
+        return self.handle_upload
 
     async def handle_upload(self):
         for data in self._uploaded_data:

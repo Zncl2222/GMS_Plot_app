@@ -5,6 +5,8 @@ from plotly.subplots import make_subplots
 import pynecone as pc
 from io import BytesIO
 from plot_gms.state import State
+from plot_gms.components.modal import ModalState
+from plot_gms.helper import is_numeric
 
 
 class MarkovPlotBase(State):
@@ -53,6 +55,19 @@ class MarkovPlot(MarkovPlotBase):
         for data in file:
             self._upload_data.append(await data.read())
         self.is_progressing = True
+        return self.markov_var_validation
+
+    async def markov_var_validation(self):
+        if is_numeric(self.fig_title_font_size) is False:
+            self.is_progressing = False
+            return ModalState.change('Error', 'Fig title font size should be a number !')
+        if is_numeric(self.fig_height) is False:
+            self.is_progressing = False
+            return ModalState.change('Error', 'Fig height should be a number !')
+        if is_numeric(self.fig_width) is False:
+            self.is_progressing = False
+            return ModalState.change('Error', 'Fig width should be a number !')
+
         return self.markov_data_reading
 
     async def markov_data_reading(self):
