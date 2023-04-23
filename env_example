@@ -1,0 +1,4 @@
+API_URL="http://your_host:your_backend_port"
+BACKEND_PORT="your_backend_port"
+FRONTEND_PORT="your_frontend_port"
+MODE="PROD or DEV"
