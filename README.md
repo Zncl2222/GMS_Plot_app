@@ -1,9 +1,12 @@
 ## PlotGMS
 
+
 **PlotGMS** is a program used to visualize data quickly. Originally developed using the [Flask](https://github.com/pallets/flask) framework, it was only available to the GeoHydraulic laboratory as a fast way to visualize GMS model results using [Matplotlib](https://github.com/matplotlib/matplotlib). However, **PlotGMS** has now been refactored using the new Python web framework [Pynecone](https://github.com/pynecone-io/pynecone). In addition to the original plotting functions for GMS, it also provides some common visualization APIs. Users can simply upload files containing data in txt or csv format. Currently, **PlotGMS** only provides charts drawn using the [Plotly](https://github.com/plotly/plotly.py) plotting package, but in the future, other plotting packages such as [Matplotlib](https://github.com/matplotlib/matplotlib) may be added to provide users with more choices.
 
 
+
 ## Preview
+<img src='figure/plotgms.png'>
 
 ## How to use
 
@@ -32,18 +35,34 @@ Or you can use pip to install
 ```bash
 pip install -r requirements.txt
 ```
+
 Initialize pynecone project
 ```bash
 pc init
 ```
+
+Before you run app, you should create .env file in you project root directory. All the requirements env are listed in env_example file. For example
+```
+# .env
+API_URL="http://localhost:8000"
+BACKEND_PORT="8000"
+FRONTEND_PORT="3000"
+MODE="DEV"
+```
+
 Run app
 ```bash
 pc run
 ```
 
 ### Installation (running with docker)
-> __Warning__
+
+<h4 align="center">
+
+>__Warning__<br>
 > pynecone have some problems when runing PROD mode in container, thus now docker is setted to run in dev mode
+
+</h4>
 
 If you want to running this app in a conatainer, this project offer a dockerfile to build plotgms easily.
 #### Prequest
@@ -52,6 +71,15 @@ If you want to running this app in a conatainer, this project offer a dockerfile
 Clone this repository
 ```bash
 git clone https://github.com/Zncl2222/PlotGMS.git
+```
+
+Before you build docker image, you should create .env file in you project root directory. All the requirements env are listed in env_example file. For example
+```
+# .env
+API_URL="http://localhost:8000"
+BACKEND_PORT="8000"
+FRONTEND_PORT="3000"
+MODE="DEV"
 ```
 
 Build docker image with followning command in propject root directory
