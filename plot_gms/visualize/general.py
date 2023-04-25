@@ -6,6 +6,7 @@ from io import BytesIO
 from plot_gms.state import State
 from plot_gms.components.modal import ModalState
 from plot_gms.helper import is_numeric
+from .base import VisualizeVar
 
 
 class GeneralUploadBase(State):
@@ -60,6 +61,7 @@ class GeneralUploadBase(State):
 
 class GeneralPlot(GeneralUploadBase):
     async def handle_upload_check(self, file: list[pc.UploadFile]):
+        self._uploaded_data = []
         self.is_progressing = True
         for data in file:
             self._uploaded_data.append(await data.read())
@@ -108,12 +110,23 @@ class GeneralPlot(GeneralUploadBase):
             legend = True
             data.append(
                 go.Scatter(
+                    mode='markers',
                     x=self._df_list[i].iloc[:, 0],
                     y=self._df_list[i].iloc[:, 1],
                     showlegend=legend,
                 ),
             )
         self.fig = go.Figure(data=data)
+        self.fig.update_traces(
+            marker=dict(
+                size=12,
+                symbol='circle',
+                line=dict(
+                    width=2,
+                    color='DarkSlateGrey',
+                ),
+            ),
+        )
         self.fig.update_xaxes(
             showgrid=True,
             gridwidth=1,
@@ -135,6 +148,11 @@ class GeneralPlot(GeneralUploadBase):
             ),
             plot_bgcolor='rgba(0, 0, 0, 0)',
             legend=dict(y=0.5, traceorder='reversed'),
+            updatemenus=VisualizeVar.get_update_menu(),
+            annotations=VisualizeVar.get_annotations(),
+        )
+        self.fig.update_layout(
+            VisualizeVar.get_slider(),
         )
 
         return self.clean_all
