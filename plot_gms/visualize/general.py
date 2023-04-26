@@ -113,6 +113,7 @@ class GeneralPlot(GeneralUploadBase):
                     mode='markers',
                     x=self._df_list[i].iloc[:, 0],
                     y=self._df_list[i].iloc[:, 1],
+                    line=dict(width=2),
                     showlegend=legend,
                 ),
             )
